@@ -7,6 +7,7 @@ const SplashScreen = ({ navigation }) => {
         // Automatically navigate to 'selectRole' after 3 seconds
         const timer = setTimeout(() => {
             navigation.replace('selectRole');
+            // navigation.replace('property');
         }, 3000); // 3000 milliseconds = 3 seconds
 
         // Cleanup the timer on component unmount

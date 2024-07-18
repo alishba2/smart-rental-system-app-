@@ -6,8 +6,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
 const EmailPasswordLoginScreen = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('maryam.bsse4059@iiu.edu.pk');
+    const [password, setPassword] = useState('qwerty');
     const [error, setError] = useState('');
     const navigation = useNavigation();
 

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Icon } from '@expo/vector-icons';
+import Property from './owner/property';
 
 const HomeScreen = ({ navigation }) => {
     const [propertyData, setPropertyData] = useState([]);
@@ -11,13 +12,13 @@ const HomeScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3001/property');
+                const response = await fetch('http://10.0.2.2:3001/property');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
                 setPropertyData(data);
-                setFilteredData(data);
+                setFilteredData(data[0]);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -61,7 +62,8 @@ const HomeScreen = ({ navigation }) => {
                 />
                 <Button title="Search" onPress={handleSearch} color="#5585b5" />
             </View>
-
+             {/* Property Component*/}
+            {/* <Property /> */}
             {/* Property List */}
             <FlatList
                 data={filteredData}
@@ -93,6 +95,11 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                 )}
             />
+            <FlatList data={propertyData} renderItem={item => {
+                console.log(item)
+                return <Text>Working</Text>
+            }}/>
+            <Text>Testing</Text>
         </View>
     );
 };
