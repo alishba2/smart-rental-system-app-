@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Icon } from '@expo/vector-icons';
-import Property from './owner/property';
+import Property from './property';
 
 const HomeScreen = ({ navigation }) => {
     const [propertyData, setPropertyData] = useState([]);
@@ -52,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {/* Search Bar */}
+            Search Bar
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
@@ -62,9 +62,9 @@ const HomeScreen = ({ navigation }) => {
                 />
                 <Button title="Search" onPress={handleSearch} color="#5585b5" />
             </View>
-             {/* Property Component*/}
+             Property Component
             {/* <Property /> */}
-            {/* Property List */}
+            Property List
             <FlatList
                 data={filteredData}
                 keyExtractor={(item) => item._id}
@@ -95,12 +95,12 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                 )}
             />
-            <FlatList data={propertyData} renderItem={item => {
+            {/* <FlatList data={propertyData} renderItem={item => {
                 console.log(item)
                 return <Text>Working</Text>
-            }}/>
-            <Text>Testing</Text>
+            }}/>*/}
         </View>
+
     );
 };
 

@@ -10,7 +10,7 @@ export default function Property() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/property`);
+        const response = await fetch(`http://10.0.2.2:3001/property`);
         const data = await response.json();
         setProperties(data);
         setLoading(false);
