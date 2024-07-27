@@ -1,23 +1,36 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import build from "../assets/buid.png"; // Image to be placed above content
 
-const SelectRole = ({ navigation }) => {
+const { height, width } = Dimensions.get('window');
+
+const SelectRole = () => {
+    const navigation = useNavigation();
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Select Role</Text>
+            {/* Image placed at the top */}
+            <Image source={build} style={styles.image} resizeMode="cover" />
 
-            <TouchableOpacity
-                style={[styles.button, styles.buttonAlt]}
-                onPress={() => navigation.navigate('register')}
-            >
-                <Text style={styles.buttonText}>Owner</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[styles.button, styles.buttonAlt]} // Apply additional style for the second button
-                onPress={() => navigation.navigate('RentOutPropertyScreen')}
-            >
-                <Text style={styles.buttonText}>Tenant</Text>
-            </TouchableOpacity>
+            {/* Content area */}
+            <View style={styles.content}>
+                {/* Sign In Button */}
+                <TouchableOpacity
+                    style={styles.continueButton}
+                    onPress={() => navigation.navigate('login')}
+                >
+                    <Text style={styles.buttonText}>Sign In</Text>
+                </TouchableOpacity>
+
+                {/* Continue Without Sign In Text */}
+                <TouchableOpacity
+                    style={styles.continueButton}
+                    onPress={() => navigation.navigate('Home')}
+                >
+                    <Text style={styles.buttonText}>Continue Without Sign In</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -27,27 +40,43 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: 'white', // Background color of the container
     },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
+    image: {
+        width: '100%',
+        height: height * 0.5, // Adjusted height based on preference
+        marginBottom: 20, // Space between image and content
+        marginTop: 120
     },
-    button: {
-        width: 200,
+    content: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    continueButton: {
+        width: '100%',
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 100, // Rounded corners for button
+        backgroundColor: '#fdb44b', // Background color
         marginVertical: 10,
-    },
-    buttonAlt: {
-        backgroundColor: '#bbe4e9', // Different color for the second button
+        shadowColor: '#000', // Shadow effect
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5, // Elevation for Android
+        paddingVertical: 15,
+        paddingHorizontal: 50
     },
     buttonText: {
-        color: '#00204a',
+        color: "black",
         fontSize: 16,
-    }
+        fontWeight: 'bold',
+        textTransform: "uppercase",
+        textAlign: 'center',
+    },
 });
 
 export default SelectRole;

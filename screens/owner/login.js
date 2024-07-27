@@ -1,9 +1,9 @@
-// EmailPasswordLoginScreen.js
-import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { auth } from '../../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useState, useContext } from 'react';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../appContext';
+import { loginWithEmailAndPassword } from '../../firebase'; // Import your custom function
 
 const EmailPasswordLoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -11,14 +11,23 @@ const EmailPasswordLoginScreen = () => {
     const [error, setError] = useState('');
     const navigation = useNavigation();
 
-    const handleLogin = async () => {
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            Alert.alert('Success', 'Login successful!');
-            navigation.navigate('Home');
+    const { updateLoggedIn, updateRole, setLoggedInUser } = useContext(AppContext);
 
-        } catch (err) {
-            setError(err.message);
+    const handleLogin = async () => {
+        const result = await loginWithEmailAndPassword(email, password);
+        if (result) {
+            console.log(result, "=================resultttttttttttttttttttt");
+            Alert.alert('Success', 'Login successful!');
+            Alert.alert(result.role);
+            await AsyncStorage.setItem('isLoggedIn', 'true');
+            setLoggedInUser(result);
+
+            updateRole(result.role);
+
+            updateLoggedIn();
+            navigation.navigate('Home');
+        } else {
+            setError('Login failed. Please check your credentials and try again.');
         }
     };
 
@@ -29,31 +38,36 @@ const EmailPasswordLoginScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>LOG IN</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            />
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.googleButton} onPress={googleLogin}>
-                <Text style={styles.googleButtonText}>Login with Google</Text>
-            </TouchableOpacity>
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('register')}>
-                <Text style={styles.linkText}>Don't have an account? Register</Text>
-            </TouchableOpacity>
+
+            <View style={styles.bg}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                />
+                <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                    <Text style={styles.buttonText}>Login</Text>
+                </TouchableOpacity>
+                {/* <TouchableOpacity style={styles.googleButton} onPress={googleLogin}>
+                    <Text style={styles.googleButtonText}>Login with Google</Text>
+                </TouchableOpacity> */}
+                {error ? <Text style={styles.error}>{error}</Text> : null}
+                <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('register')}>
+                    <Text style={styles.linkText}>Don't have an account? Register</Text>
+                </TouchableOpacity>
+
+            </View>
+
         </View>
     );
 };
@@ -61,16 +75,22 @@ const EmailPasswordLoginScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 150,
-        padding: 25,
-        backgroundColor: '#f2f2f2',
+        justifyContent: 'center',
+        backgroundColor: '#00204a',
+        // paddingHorizontal: 30,
     },
     title: {
-        fontSize: 40,
+        fontSize: 35,
         fontWeight: 'bold',
-        marginBottom: 24,
+        marginLeft: 50,
         color: "#005792",
-        textAlign: 'center',
+        textTransform: "uppercase",
+        color: "white",
+        marginTop: 40,
+        marginVertical: 20,
+        letterSpacing: 7,
+        marginLeft: 260
+
     },
     input: {
         height: 50,
@@ -78,31 +98,30 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         marginBottom: 30,
         paddingHorizontal: 12,
-        // backgroundColor: '#fff',
     },
     button: {
-        backgroundColor: '#5585b5',
-        paddingVertical: 16,  // Increased height
-        borderRadius: 5,
+        backgroundColor: '#ffc93c',
+        paddingVertical: 16,
+        borderRadius: 70,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 20,
     },
     buttonText: {
-        color: '#fff',
+        color: 'black',
         fontWeight: 'bold',
         fontSize: 18,
     },
     googleButton: {
-        backgroundColor: '#ff9a3c',  // Google blue
+        backgroundColor: '#ff9a3c',
         paddingVertical: 16,
-        borderRadius: 5,
+        borderRadius: 70,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 20,
     },
     googleButtonText: {
-        color: '#fff',
+        color: 'black',
         fontWeight: 'bold',
         fontSize: 18,
     },
@@ -118,6 +137,14 @@ const styles = StyleSheet.create({
     linkText: {
         color: '#5585b5',
         fontSize: 16,
+    },
+    bg: {
+        backgroundColor: "#fff",
+        padding: 30,
+        margin: 0,
+        borderTopStartRadius: 50,
+        paddingBottom: 70,
+        borderBottomRightRadius: 50,
     },
 });
 

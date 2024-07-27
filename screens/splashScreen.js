@@ -1,25 +1,32 @@
-import React, { useEffect } from 'react';
-import { View, Image, StyleSheet, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as Progress from 'react-native-progress';
 
 const SplashScreen = ({ navigation }) => {
+    const [progress, setProgress] = useState(0);
+
     useEffect(() => {
-        // Automatically navigate to 'selectRole' after 3 seconds
-        const timer = setTimeout(() => {
-            navigation.replace('selectRole');
-        }, 3000); // 3000 milliseconds = 3 seconds
+        const interval = setInterval(() => {
+            setProgress((oldProgress) => {
+                if (oldProgress < 1) {
+                    return oldProgress + 0.01;
+                } else {
+                    clearInterval(interval);
+                    navigation.replace('OnboardingScreen');
+                    return oldProgress;
+                }
+            });
+        }, 30); // Update progress every 30ms
 
         // Cleanup the timer on component unmount
-        return () => clearTimeout(timer);
+        return () => clearInterval(interval);
     }, [navigation]);
 
     return (
         <GestureHandlerRootView style={styles.container}>
             <View style={styles.container}>
-                <Image
-                    source={require('../assets/home.png')} // Replace with your image path
-                    style={styles.image}
-                />
+                <Progress.Bar progress={progress} width={200} color="#007bff" borderRadius={5} />
             </View>
         </GestureHandlerRootView>
     );
@@ -30,11 +37,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#5585b5',
-    },
-    image: {
-        width: 200,
-        height: 200,
+        backgroundColor: '#d5def5',
     },
 });
 
